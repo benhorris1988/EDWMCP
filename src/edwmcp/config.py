@@ -109,6 +109,12 @@ class Settings(BaseSettings):
     query_timeout_seconds: int = 30
     demo: bool = False
 
+    admin_token: str | None = None
+    admin_insecure: bool = False
+    admin_host: str = "127.0.0.1"
+    admin_port: int = 8766
+    admin_cors_origins: str = "*"
+
 
 def load_skills_config(path: str | Path) -> SkillsConfig:
     p = Path(path)

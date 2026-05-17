@@ -118,19 +118,44 @@ edwmcp --transport streamable-http --host 0.0.0.0 --port 8765
 - All user-supplied values in the badminton skill (player IDs, court IDs, timestamps) are passed as bind parameters, not concatenated into SQL.
 - Connect with a read-only DB user on the EDW side and a least-privilege user on the badminton side (SELECT, INSERT into `Games`/`GamePlayers`, DELETE from `PlayerQueue`, UPDATE on the columns the skill actually writes to).
 
+## Admin UI (Flutter Web)
+
+A separate Flutter Web app under `admin_ui/` drives a small REST configuration plane on the server (`edwmcp --admin`). Use it to:
+
+- View server health and the registered MCP tool catalogue.
+- Edit the Badminton & EDW SQLAlchemy URLs, with live "test connection" buttons.
+- Edit the badminton schema mapping (table & column names) and the rotation rules without touching YAML.
+- Enable/disable the EDW skill and restrict it to specific schemas.
+
+Start the API:
+
+```bash
+EDWMCP_ADMIN_TOKEN=$(openssl rand -hex 16) edwmcp --admin
+```
+
+Run the UI:
+
+```bash
+cd admin_ui && flutter pub get && flutter run -d chrome
+```
+
+The admin API listens on `127.0.0.1:8766` by default, requires a bearer token (set `EDWMCP_ADMIN_INSECURE=1` to skip auth for loopback dev), and is fully separate from the MCP transport so the Badminton-app chatbot integration is unaffected.
+
 ## Project layout
 
 ```
 src/edwmcp/
-  __main__.py        # CLI entry, transport selection
+  __main__.py        # CLI entry, transport selection, --admin flag
   server.py          # FastMCP factory, wires up skills
   config.py          # Settings (env) + skills config (YAML)
   db.py              # SQLAlchemy engines, catalog helpers, query exec
   safety.py          # SELECT-only guard for the EDW skill
+  admin.py           # FastAPI admin REST API (drives admin_ui)
   demo_data.py       # SQLite seed for EDWMCP_DEMO=1
   skills/
     edw.py
     badminton.py
+admin_ui/            # Flutter Web configuration UI
 tests/
 examples/
   claude_desktop_config.json

@@ -20,6 +20,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--port", type=int, help="Bind port for HTTP transports (default 8765).")
     parser.add_argument("--config", help="Path to skills config YAML.")
     parser.add_argument("--demo", action="store_true", help="Run against a seeded in-memory SQLite DB.")
+    parser.add_argument(
+        "--admin",
+        action="store_true",
+        help="Start the admin REST API instead of the MCP server (config plane for the Flutter UI).",
+    )
     parser.add_argument("-v", "--verbose", action="store_true")
     args = parser.parse_args(argv)
 
@@ -41,6 +46,12 @@ def main(argv: list[str] | None = None) -> int:
         os.environ["EDWMCP_DEMO"] = "1"
 
     settings = Settings()
+
+    if args.admin:
+        from .admin import run as run_admin
+        run_admin()
+        return 0
+
     mcp, _engines = build_server(settings)
 
     if settings.transport == "stdio":
