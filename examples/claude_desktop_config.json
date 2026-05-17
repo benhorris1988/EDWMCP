@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "edwmcp": {
+      "command": "edwmcp",
+      "args": ["--transport", "stdio"],
+      "env": {
+        "EDWMCP_CONFIG": "/abs/path/to/edwmcp/config.example.yaml",
+        "EDWMCP_BADMINTON_URL": "mssql+pyodbc://user:pass@sqlserver.local:1433/Badminton?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes",
+        "EDWMCP_EDW_URL": "mssql+pyodbc://user:pass@edw.local:1433/EDW?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
+      }
+    }
+  }
+}

@@ -1,0 +1,44 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "edwmcp"
+version = "0.1.0"
+description = "An MCP server that surfaces an on-prem Enterprise Data Warehouse and a Microsoft SQL Server badminton database to local LLMs."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Ben Horris" }]
+dependencies = [
+    "mcp>=1.2.0",
+    "sqlalchemy>=2.0",
+    "pydantic>=2.6",
+    "pydantic-settings>=2.2",
+    "sqlparse>=0.5",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0",
+    "anyio>=4.3",
+]
+
+[project.optional-dependencies]
+mssql = ["pyodbc>=5.1"]
+postgres = ["psycopg[binary]>=3.1"]
+teradata = ["teradatasqlalchemy>=20"]
+oracle = ["oracledb>=2.2"]
+snowflake = ["snowflake-sqlalchemy>=1.6"]
+dev = ["pytest>=8.0", "pytest-asyncio>=0.23", "ruff>=0.4"]
+
+[project.scripts]
+edwmcp = "edwmcp.__main__:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/edwmcp"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
