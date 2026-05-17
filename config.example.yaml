@@ -1,0 +1,59 @@
+# Skill configuration. The badminton skill is opinionated but its SQL is driven
+# by the table/column mapping below, so it can be aligned with your existing
+# Badminton app database without code changes.
+
+badminton:
+  enabled: true
+  # Optional schema prefix (e.g. "dbo" for SQL Server). Leave blank to omit.
+  schema: dbo
+
+  tables:
+    players: Players
+    courts: Courts
+    games: Games
+    game_players: GamePlayers
+    queue: PlayerQueue
+
+  columns:
+    players:
+      id: PlayerId
+      name: Name
+      skill: SkillRating       # numeric, higher = stronger; null tolerated
+      active: IsActive         # bit / boolean
+      joined_at: JoinedAt
+    courts:
+      id: CourtId
+      name: Name
+      available: IsAvailable
+    games:
+      id: GameId
+      court_id: CourtId
+      started_at: StartedAt
+      ended_at: EndedAt
+      status: Status           # 'in_progress' | 'finished' | 'cancelled'
+      winning_team: WinningTeam
+    game_players:
+      game_id: GameId
+      player_id: PlayerId
+      team: Team               # 1 or 2
+    queue:
+      player_id: PlayerId
+      joined_at: JoinedAt
+
+  # Rotation rules used by the suggest_next_players tool.
+  rotation:
+    players_per_game: 4
+    # 'queue_order' picks the longest-waiting players first.
+    # 'balanced_skill' picks 4 from the front of the queue and assigns teams to balance skill.
+    strategy: balanced_skill
+    # Players who finished a game within this many minutes are skipped (rest period).
+    rest_minutes: 2
+
+edw:
+  enabled: true
+  # Optional allow-list of schemas the LLM is permitted to introspect/query.
+  # Leave empty to allow all (subject to DB user permissions).
+  allowed_schemas: []
+  # Reject any SELECT that fans out beyond this many rows in the result set.
+  # Hard-enforced in addition to EDWMCP_QUERY_MAX_ROWS.
+  max_rows: 500

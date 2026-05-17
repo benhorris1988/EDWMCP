@@ -1,0 +1,19 @@
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+.idea/
+.vscode/
+
+# Generated Flutter files we don't want to track
+ios/
+android/
+linux/
+macos/
+windows/
+
+# Lockfile is committed by Flutter convention, but keep it out for a starter scaffold
+pubspec.lock
